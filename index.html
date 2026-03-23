@@ -2,588 +2,795 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>UniEnroll — Online Enrollment System</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f5f2eb;
-    --surface: #fffef9;
-    --primary: #1a3a2a;
-    --accent: #4c8b5e;
-    --accent2: #d4a853;
-    --danger: #c0392b;
-    --text: #1c1c1c;
-    --muted: #7a7a6e;
-    --border: #d8d4c8;
-    --shadow: 0 2px 16px rgba(26,58,42,0.10);
+    --maroon:    #7B1D1D;
+    --maroon-dk: #5A1212;
+    --maroon-lt: #9E2A2A;
+    --gold:      #F5C518;
+    --gold-dk:   #D4A800;
+    --gold-lt:   #FDD835;
+    --white:     #FFFFFF;
+    --cream:     #FFFDF5;
+    --offwhite:  #F9F5EC;
+    --border:    #E8DFC8;
+    --text:      #1C1008;
+    --muted:     #8A7560;
+    --danger:    #C0392B;
+    --shadow-sm: 0 2px 8px rgba(123,29,29,.10);
+    --shadow-md: 0 6px 28px rgba(123,29,29,.14);
+    --shadow-lg: 0 16px 56px rgba(123,29,29,.18);
+    --bottom-nav-h: 64px;
+    --header-h: 56px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
+    font-family: 'Outfit', sans-serif;
+    background: var(--offwhite);
     color: var(--text);
     min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
   }
-  /* ─── HEADER ─── */
+
+  /* ═══ HEADER ═══ */
   header {
-    background: var(--primary);
-    color: #fff;
-    padding: 0 2rem;
+    background: linear-gradient(135deg, var(--maroon-dk) 0%, var(--maroon) 60%, var(--maroon-lt) 100%);
+    color: var(--white);
+    padding: 0 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,.18);
+    height: var(--header-h);
+    position: sticky; top: 0; z-index: 200;
+    box-shadow: 0 4px 20px rgba(90,18,18,.35);
   }
-  header .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    letter-spacing: .02em;
-    color: #fff;
+  header::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold-dk), var(--gold), var(--gold-lt), var(--gold));
   }
-  header .logo span { color: var(--accent2); }
-  header nav { display: flex; gap: .5rem; }
-  header nav button {
-    background: transparent;
-    border: 1.5px solid rgba(255,255,255,.25);
-    color: #fff;
-    padding: .4rem 1.1rem;
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .85rem;
-    cursor: pointer;
-    transition: background .2s, border-color .2s;
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; font-weight: 800; color: var(--white);
+    display: flex; align-items: center; gap: .4rem; flex-shrink: 0;
   }
-  header nav button.active, header nav button:hover {
-    background: var(--accent);
-    border-color: var(--accent);
+  .logo-icon {
+    width: 30px; height: 30px; background: var(--gold); border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .85rem; color: var(--maroon-dk); font-weight: 800; flex-shrink: 0;
   }
-  /* ─── LAYOUT ─── */
-  .container { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; }
-  /* ─── SCREENS ─── */
-  .screen { display: none; animation: fadeIn .35s ease; }
-  .screen.active { display: block; }
-  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
-  /* ─── CARDS ─── */
-  .card {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 2rem;
-    box-shadow: var(--shadow);
+  .logo span { color: var(--gold); }
+  /* Desktop nav */
+  .desktop-nav { display: none; align-items: center; gap: .35rem; }
+  .nav-btn {
+    background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.18);
+    color: rgba(255,255,255,.75); padding: .38rem .85rem; border-radius: 7px;
+    font-family: 'Outfit', sans-serif; font-size: .78rem; font-weight: 500;
+    cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: .25rem;
+    white-space: nowrap; min-height: 34px;
   }
-  /* ─── PAGE TITLE ─── */
-  .page-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2rem;
-    color: var(--primary);
-    margin-bottom: .35rem;
+  .nav-btn:hover { background: rgba(245,197,24,.15); border-color: rgba(245,197,24,.45); color: var(--gold-lt); }
+  .nav-btn.active { background: var(--gold); border-color: var(--gold); color: var(--maroon-dk); font-weight: 700; }
+  .nav-btn.locked { opacity: .35; cursor: not-allowed; pointer-events: none; }
+  /* Mobile header right */
+  .header-right { display: flex; align-items: center; gap: .45rem; }
+  #nav-user-badge-mobile {
+    display: none; background: rgba(245,197,24,.18); border: 1.5px solid rgba(245,197,24,.3);
+    padding: .28rem .65rem; border-radius: 20px; font-size: .74rem; font-weight: 600; color: var(--gold-lt);
+    align-items: center; gap: .25rem;
   }
-  .page-sub { color: var(--muted); font-size: .95rem; margin-bottom: 2rem; }
-  /* ─── FORM ─── */
-  .form-group { margin-bottom: 1.25rem; }
-  label { display: block; font-size: .82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .4rem; }
-  input, select {
-    width: 100%; padding: .7rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .95rem;
-    background: var(--bg);
-    color: var(--text);
-    transition: border-color .2s;
+  #desktop-user-badge {
+    display: none; background: rgba(245,197,24,.18); border: 1.5px solid rgba(245,197,24,.3);
+    padding: .28rem .65rem; border-radius: 20px; font-size: .74rem; font-weight: 600; color: var(--gold-lt);
+    align-items: center; gap: .25rem; white-space: nowrap;
   }
-  input:focus, select:focus { outline: none; border-color: var(--accent); }
-  .btn {
-    display: inline-flex; align-items: center; gap: .5rem;
-    padding: .75rem 1.8rem;
-    border-radius: 8px;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity .2s, transform .15s;
+  #mobile-logout-btn {
+    display: none; background: rgba(245,197,24,.15); border: 1.5px solid rgba(245,197,24,.3);
+    color: var(--gold-lt); padding: .3rem .65rem; border-radius: 7px;
+    font-family: 'Outfit', sans-serif; font-size: .76rem; font-weight: 600; cursor: pointer;
   }
-  .btn:hover { opacity: .88; transform: translateY(-1px); }
-  .btn:active { transform: none; }
-  .btn-primary { background: var(--primary); color: #fff; }
-  .btn-accent { background: var(--accent); color: #fff; }
-  .btn-gold { background: var(--accent2); color: #1a1a1a; }
-  .btn-danger { background: var(--danger); color: #fff; }
-  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
-  .btn-sm { padding: .45rem 1rem; font-size: .82rem; }
-  /* ─── GRID ─── */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-  @media(max-width:640px){ .grid-2 { grid-template-columns: 1fr; } }
-  /* ─── SUBJECT TABLE ─── */
-  .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
-  .subject-card {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 1.1rem 1.25rem;
-    cursor: pointer;
+
+  /* ═══ BOTTOM NAV ═══ */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--white);
+    border-top: 1.5px solid var(--border);
+    box-shadow: 0 -4px 18px rgba(123,29,29,.12);
+    z-index: 200;
+  }
+  .bottom-nav-inner { display: flex; height: var(--bottom-nav-h); align-items: stretch; padding: 0 .2rem; }
+  .bnav-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; background: none; border: none; cursor: pointer; padding: .25rem .15rem;
+    border-radius: 10px; transition: background .15s; position: relative;
+    font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .bnav-icon { font-size: 1.25rem; line-height: 1; display: block; }
+  .bnav-label { font-size: .6rem; font-weight: 600; color: var(--muted); letter-spacing: .01em; }
+  .bnav-btn.active .bnav-label { color: var(--maroon); font-weight: 700; }
+  .bnav-btn.active::after {
+    content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+    width: 24px; height: 3px; background: var(--maroon); border-radius: 0 0 3px 3px;
+  }
+  .bnav-btn.locked { opacity: .28; pointer-events: none; }
+  .bnav-btn:not(.locked):active { background: rgba(123,29,29,.07); }
+
+  /* ═══ LAYOUT ═══ */
+  .container {
+    max-width: 1140px; margin: 0 auto;
+    padding: 1.25rem 1rem calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px) + 1rem);
+  }
+
+  /* ═══ SCREENS ═══ */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeUp .32s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+  /* ═══ CARDS ═══ */
+  .card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.1rem; box-shadow: var(--shadow-sm); }
+  .card-header {
+    font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--maroon);
+    margin-bottom: .9rem; padding-bottom: .6rem; border-bottom: 2px solid var(--gold);
+    display: flex; align-items: center; gap: .4rem;
+  }
+
+  /* ═══ TYPOGRAPHY ═══ */
+  .page-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 800; color: var(--maroon); margin-bottom: .2rem; line-height: 1.2; }
+  .page-title span { color: var(--gold-dk); }
+  .page-sub { color: var(--muted); font-size: .85rem; margin-bottom: 1.1rem; line-height: 1.5; }
+
+  /* ═══ STEPS ═══ */
+  #steps-bar { display: none; margin-bottom: 1.1rem; }
+  .steps-container { display: flex; background: var(--white); border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .step {
+    flex: 1; text-align: center; padding: .55rem .25rem; font-size: .68rem; font-weight: 600;
+    color: var(--muted); border-right: 1.5px solid var(--border); transition: all .22s; position: relative;
+  }
+  .step:last-child { border-right: none; }
+  .step .step-num { display: block; font-size: .9rem; margin-bottom: .03rem; }
+  .step.done { background: rgba(123,29,29,.05); color: var(--maroon); }
+  .step.done::after { content:''; position:absolute; bottom:0;left:0;right:0; height:3px; background:var(--maroon); }
+  .step.active { background: var(--maroon); color: var(--gold); }
+  .step.active::after { content:''; position:absolute; bottom:0;left:0;right:0; height:3px; background:var(--gold); }
+
+  /* ═══ AUTH ═══ */
+  .auth-wrap {
+    min-height: calc(100svh - var(--header-h) - 4rem);
+    display: flex; align-items: center; justify-content: center; padding: .5rem 0 1.5rem;
+  }
+  .auth-box { width: 100%; max-width: 420px; background: var(--white); border-radius: 18px; box-shadow: var(--shadow-lg); border: 1.5px solid var(--border); overflow: hidden; }
+  .auth-hero { background: linear-gradient(135deg, var(--maroon-dk) 0%, var(--maroon) 100%); padding: 1.6rem 1.5rem 1.4rem; text-align: center; position: relative; }
+  .auth-hero::after { content:''; position:absolute; bottom:0;left:0;right:0; height:3px; background:linear-gradient(90deg,transparent,var(--gold),var(--gold-lt),var(--gold),transparent); }
+  .auth-hero-logo { font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 800; color: var(--white); margin-bottom: .15rem; }
+  .auth-hero-logo span { color: var(--gold); }
+  .auth-hero p { color: rgba(255,255,255,.58); font-size: .82rem; }
+  .auth-hero-icon { width: 46px; height: 46px; background: rgba(245,197,24,.18); border: 2px solid rgba(245,197,24,.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin: 0 auto .65rem; }
+  .auth-body { padding: 1.4rem; }
+  .auth-tabs { display: flex; background: var(--offwhite); border-radius: 9px; padding: 3px; margin-bottom: 1.35rem; gap: 3px; }
+  .auth-tab {
+    flex: 1; padding: .6rem; text-align: center; border-radius: 7px; font-size: .88rem; font-weight: 600;
+    cursor: pointer; border: none; transition: all .18s; background: transparent; color: var(--muted);
+    font-family: 'Outfit', sans-serif; min-height: 44px; touch-action: manipulation;
+  }
+  .auth-tab.active { background: var(--maroon); color: var(--white); box-shadow: 0 2px 10px rgba(123,29,29,.3); }
+
+  /* ═══ FORMS ═══ */
+  .form-group { margin-bottom: .95rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+  label { display: block; font-size: .72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .32rem; }
+  input, select, textarea {
+    width: 100%; padding: .82rem 1rem;
+    border: 1.5px solid var(--border); border-radius: 9px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem; /* prevents iOS zoom */
+    background: var(--cream); color: var(--text);
     transition: border-color .2s, box-shadow .2s;
-    position: relative;
+    -webkit-appearance: none; appearance: none;
   }
-  .subject-card:hover { border-color: var(--accent); box-shadow: 0 4px 18px rgba(76,139,94,.15); }
-  .subject-card.selected { border-color: var(--accent); background: #eef6f0; }
-  .subject-card.full { opacity: .6; cursor: not-allowed; border-color: #e0d9d0; }
-  .subject-card .subj-code { font-family: 'DM Mono', monospace; font-size: .78rem; color: var(--accent); font-weight: 500; }
-  .subject-card .subj-name { font-weight: 600; font-size: 1rem; margin: .2rem 0; }
-  .subject-card .subj-meta { font-size: .82rem; color: var(--muted); }
-  .slot-bar { height: 5px; background: var(--border); border-radius: 3px; margin-top: .75rem; overflow: hidden; }
+  input:focus, select:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(123,29,29,.09); }
+  .input-icon-wrap { position: relative; }
+  .input-icon { position: absolute; left: .85rem; top: 50%; transform: translateY(-50%); font-size: .85rem; color: var(--muted); pointer-events: none; }
+  .input-icon-wrap input { padding-left: 2.4rem; }
+
+  /* ═══ BUTTONS ═══ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+    padding: .85rem 1.6rem; border-radius: 9px; border: none;
+    font-family: 'Outfit', sans-serif; font-size: .92rem; font-weight: 600;
+    cursor: pointer; transition: all .18s; min-height: 50px;
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { transform: scale(.97); opacity: .9; }
+  .btn-primary { background: linear-gradient(135deg, var(--maroon), var(--maroon-lt)); color: var(--white); box-shadow: 0 4px 14px rgba(123,29,29,.28); }
+  .btn-gold { background: linear-gradient(135deg, var(--gold-dk), var(--gold)); color: var(--maroon-dk); box-shadow: 0 4px 14px rgba(212,168,0,.28); font-weight: 700; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+  .btn-danger { background: var(--danger); color: var(--white); }
+  .btn-sm { padding: .55rem 1rem; font-size: .81rem; border-radius: 7px; min-height: 42px; }
+  .btn-full { width: 100%; }
+
+  /* ═══ ALERTS ═══ */
+  .alert { padding: .78rem .95rem; border-radius: 9px; font-size: .83rem; margin-bottom: .85rem; display: flex; align-items: flex-start; gap: .5rem; line-height: 1.45; }
+  .alert-icon { font-size: .9rem; flex-shrink: 0; margin-top: .05rem; }
+  .alert-error { background: #fde8e8; color: #891515; border: 1.5px solid #f5c6c6; }
+  .alert-success { background: #dcf3e3; color: #155724; border: 1.5px solid #b0ddc0; }
+  .alert-info { background: #fff8dc; color: #7a5c00; border: 1.5px solid #f5e08a; }
+
+  /* ═══ STATS ═══ */
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; margin-bottom: 1.25rem; }
+  .stat-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; padding: .9rem 1rem; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .stat-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:linear-gradient(90deg,var(--maroon),var(--gold)); }
+  .stat-val { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--maroon); line-height: 1.1; }
+  .stat-label { font-size: .67rem; color: var(--muted); margin-top: .18rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
+  .stat-icon { position: absolute; right: .85rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; opacity: .09; }
+
+  /* Sel stats */
+  .sel-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin-bottom: 1rem; }
+  .sel-stat { background: var(--white); border: 1.5px solid var(--border); border-radius: 10px; padding: .7rem .8rem; box-shadow: var(--shadow-sm); text-align: center; }
+  .sel-stat .stat-val { font-size: 1.3rem; }
+  .sel-stat .stat-label { font-size: .63rem; }
+
+  /* ═══ SUBJECT CARDS ═══ */
+  .subject-grid { display: grid; grid-template-columns: 1fr; gap: .75rem; }
+  .subject-card {
+    background: var(--white); border: 1.5px solid var(--border); border-radius: 12px;
+    padding: .95rem 1.05rem .95rem 1.3rem; cursor: pointer; transition: all .18s;
+    position: relative; overflow: hidden; touch-action: manipulation;
+    -webkit-user-select: none; user-select: none;
+  }
+  .subject-card::before { content:''; position:absolute; top:0;left:0; width:4px;height:100%; background:var(--border); transition:background .18s; }
+  .subject-card:active { background: rgba(123,29,29,.03); }
+  .subject-card.selected { border-color: var(--gold-dk); background: #fffdf0; }
+  .subject-card.selected::before { background: var(--gold-dk); }
+  .subject-card.full { opacity: .48; cursor: not-allowed; pointer-events: none; }
+  .subj-code { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--maroon); font-weight: 600; letter-spacing: .04em; }
+  .subj-name { font-weight: 700; font-size: .93rem; margin: .18rem 0; }
+  .subj-meta { font-size: .76rem; color: var(--muted); line-height: 1.55; }
+  .sel-check { margin-top: .38rem; font-size: .76rem; color: var(--gold-dk); font-weight: 700; }
+
+  /* ═══ BADGES ═══ */
+  .badge { display: inline-flex; align-items: center; padding: .18rem .52rem; border-radius: 20px; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+  .badge-green { background: #d1f0dc; color: #145e2a; }
+  .badge-red { background: #fde8e8; color: #7c1b20; }
+  .badge-gold { background: #fff3cd; color: #7a5200; }
+  .slot-bar { height: 4px; background: var(--border); border-radius: 3px; margin-top: .65rem; overflow: hidden; }
   .slot-fill { height: 100%; border-radius: 3px; transition: width .4s; }
-  .badge {
-    display: inline-block; padding: .2rem .6rem; border-radius: 20px;
-    font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+
+  /* ═══ TABLE ═══ */
+  .sched-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .sched-table { width: 100%; border-collapse: collapse; font-size: .82rem; min-width: 460px; }
+  .sched-table thead tr { background: linear-gradient(135deg, var(--maroon-dk), var(--maroon)); }
+  .sched-table th { color: var(--white); padding: .6rem .85rem; text-align: left; font-weight: 600; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+  .sched-table th:first-child { border-radius: 0; }
+  .sched-table td { padding: .6rem .85rem; border-bottom: 1px solid var(--border); }
+  .sched-table tbody tr:last-child td { border-bottom: none; }
+  .code-cell { font-family: 'JetBrains Mono', monospace; font-size: .74rem; color: var(--maroon); font-weight: 600; }
+
+  /* ═══ FEE ═══ */
+  .fee-row { display: flex; justify-content: space-between; align-items: center; padding: .6rem 0; border-bottom: 1px solid var(--border); font-size: .86rem; }
+  .fee-row:last-child { border-bottom: none; }
+  .fee-row.total { font-weight: 700; font-size: .98rem; color: var(--maroon); background: linear-gradient(90deg,rgba(123,29,29,.04),rgba(245,197,24,.08)); padding: .75rem .9rem; border-radius: 9px; margin-top: .45rem; }
+
+  /* ═══ PAYMENT METHODS ═══ */
+  .pay-methods { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1rem; }
+  .pay-method-opt {
+    border: 1.5px solid var(--border); border-radius: 10px; padding: .8rem .85rem;
+    cursor: pointer; transition: all .18s; display: flex; align-items: center; gap: .5rem;
+    font-size: .83rem; font-weight: 500; background: var(--cream); min-height: 50px;
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
   }
-  .badge-green { background: #d4edda; color: #1a6b32; }
-  .badge-red { background: #f8d7da; color: #7c1b20; }
-  .badge-gold { background: #fff3cd; color: #7a5c00; }
-  /* ─── SCHEDULE ─── */
-  .sched-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: .88rem; }
-  .sched-table th { background: var(--primary); color: #fff; padding: .6rem 1rem; text-align: left; font-weight: 500; }
-  .sched-table td { padding: .6rem 1rem; border-bottom: 1px solid var(--border); }
-  .sched-table tr:hover td { background: #f0ede5; }
-  /* ─── PAYMENT ─── */
-  .fee-row { display: flex; justify-content: space-between; padding: .6rem 0; border-bottom: 1px solid var(--border); font-size: .92rem; }
-  .fee-row.total { font-weight: 700; font-size: 1.05rem; border-bottom: none; color: var(--primary); }
-  /* ─── ALERT ─── */
-  .alert { padding: .85rem 1.2rem; border-radius: 8px; font-size: .9rem; margin-bottom: 1rem; }
-  .alert-error { background: #fde8e8; color: var(--danger); border: 1px solid #f5c6c6; }
-  .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-  .alert-info { background: #dce9f5; color: #1a3a5c; border: 1px solid #bee0f5; }
-  /* ─── DASHBOARD STATS ─── */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-  @media(max-width:700px){ .stats { grid-template-columns: 1fr 1fr; } }
-  .stat-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; }
-  .stat-val { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--primary); }
-  .stat-label { font-size: .8rem; color: var(--muted); margin-top: .2rem; text-transform: uppercase; letter-spacing: .05em; }
-  /* ─── CONFLICT ─── */
-  .conflict-badge { display: inline-block; background: #fde8e8; color: var(--danger); font-size: .75rem; padding: .15rem .55rem; border-radius: 4px; margin-left: .5rem; font-weight: 600; }
-  /* ─── DIVIDER ─── */
-  .divider { border: none; border-top: 1.5px solid var(--border); margin: 1.5rem 0; }
-  /* ─── STEPS ─── */
-  .steps { display: flex; gap: 0; margin-bottom: 2rem; }
-  .step { flex: 1; text-align: center; padding: .7rem .5rem; font-size: .8rem; font-weight: 600; color: var(--muted); border-bottom: 3px solid var(--border); transition: all .2s; }
-  .step.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .step.done { color: var(--primary); border-bottom-color: var(--primary); }
+  .pay-method-opt:active { background: rgba(123,29,29,.04); }
+  .pay-method-opt.selected { border-color: var(--gold-dk); background: #fffdf0; color: var(--maroon); font-weight: 600; }
+  .pm-icon { font-size: 1.15rem; flex-shrink: 0; }
+
+  /* ═══ GRID ═══ */
+  .grid-2 { display: grid; grid-template-columns: 1fr; gap: .9rem; }
+  .divider { border: none; border-top: 1.5px solid var(--border); margin: 1.1rem 0; }
+
+  /* ═══ MISC ═══ */
+  .demo-hint { background: linear-gradient(135deg,rgba(123,29,29,.06),rgba(245,197,24,.08)); border: 1.5px solid rgba(245,197,24,.35); border-radius: 9px; padding: .65rem .85rem; font-size: .79rem; margin-bottom: 1rem; color: var(--maroon); line-height: 1.5; }
+  .demo-hint code { font-family: 'JetBrains Mono',monospace; background: rgba(123,29,29,.08); padding: .08rem .32rem; border-radius: 4px; font-size: .74rem; color: var(--maroon-dk); font-weight: 600; }
+  .page-footer { text-align: center; padding: .5rem; font-size: .77rem; color: var(--muted); margin-top: .6rem; }
+  .page-footer a { color: var(--maroon); font-weight: 600; cursor: pointer; }
+  .action-row { display: flex; gap: .65rem; flex-wrap: wrap; margin-top: 1.1rem; }
+  .action-row .btn { flex: 1; min-width: 120px; }
+  .admin-actions { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .8rem; }
+  .admin-actions .btn { flex: 1; min-width: 130px; }
+  .enrolled-subj-item { padding: .55rem 0; border-bottom: 1px solid var(--border); font-size: .84rem; }
+  .enrolled-subj-item:last-child { border-bottom: none; }
+  .receipt-box { border: 2px dashed var(--gold-dk); border-radius: 14px; padding: 1.25rem; background: linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,250,220,.5)); text-align: center; margin-top: .8rem; }
+  .receipt-ref { font-family: 'JetBrains Mono',monospace; font-size: 1.1rem; font-weight: 700; color: var(--maroon); letter-spacing: .08em; word-break: break-all; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-thumb { background: rgba(123,29,29,.2); border-radius: 10px; }
+
+  /* ═══ RESPONSIVE ═══ */
+  /* Tablet ≥ 600px */
+  @media (min-width: 600px) {
+    .subject-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .stats { grid-template-columns: repeat(4, 1fr); }
+    .container { padding: 1.75rem 1.25rem calc(var(--bottom-nav-h) + 1.5rem); }
+    .page-title { font-size: 1.85rem; }
+  }
+
+  /* Desktop ≥ 900px */
+  @media (min-width: 900px) {
+    :root { --header-h: 66px; }
+    header { padding: 0 2.5rem; }
+    .logo { font-size: 1.55rem; }
+    .logo-icon { width: 34px; height: 34px; font-size: .95rem; }
+    .desktop-nav { display: flex; }
+    .bottom-nav { display: none !important; }
+    #desktop-user-badge { display: inline-flex !important; }
+    #mobile-logout-btn { display: none !important; }
+    #nav-user-badge-mobile { display: none !important; }
+    .container { padding: 2.25rem 1.5rem 2.25rem; }
+    .subject-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .card { padding: 1.75rem; }
+    .page-title { font-size: 2rem; }
+    .stat-val { font-size: 2rem; }
+    .btn:hover { transform: translateY(-1px); opacity: .9; }
+  }
+
+  /* Small phones < 400px */
+  @media (max-width: 399px) {
+    .form-row { grid-template-columns: 1fr; }
+    .pay-methods { grid-template-columns: 1fr; }
+    .auth-body { padding: 1.1rem; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════ HEADER ══════════════════════════════ -->
+<!-- ══ HEADER ══ -->
 <header>
-  <div class="logo">Uni<span>Enroll</span></div>
-  <nav>
-    <button onclick="showScreen('login')" id="nav-login" class="active">Login</button>
-    <button onclick="showScreen('subjects')" id="nav-subjects">Subjects</button>
-    <button onclick="showScreen('schedule')" id="nav-schedule">Schedule</button>
-    <button onclick="showScreen('payment')" id="nav-payment">Payment</button>
-    <button onclick="showScreen('admin')" id="nav-admin">Admin</button>
-  </nav>
+  <div class="logo">
+    <div class="logo-icon">U</div>
+    Uni<span>Enroll</span>
+  </div>
+  <!-- Desktop nav -->
+  <div class="desktop-nav">
+    <div id="desktop-user-badge">👤 <span id="nav-username">Student</span></div>
+    <button class="nav-btn active" onclick="gotoLogin()" id="nav-login">🔑 Login</button>
+    <button class="nav-btn locked" onclick="requireAuth('subjects')" id="nav-subjects">📚 Subjects</button>
+    <button class="nav-btn locked" onclick="requireAuth('schedule')" id="nav-schedule">🗓 Schedule</button>
+    <button class="nav-btn locked" onclick="requireAuth('payment')" id="nav-payment">💳 Payment</button>
+    <button class="nav-btn" onclick="showScreen('admin')" id="nav-admin">⚙ Admin</button>
+  </div>
+  <!-- Mobile header right -->
+  <div class="header-right">
+    <div id="nav-user-badge-mobile">👤 <span id="nav-username-mobile"></span></div>
+    <button id="mobile-logout-btn" onclick="doLogout()">🚪 Out</button>
+  </div>
 </header>
 
-<!-- ═════════════════════════════ SCREENS ════════════════════════════════ -->
+<!-- ══ MAIN ══ -->
 <div class="container">
 
-  <!-- ── STEPS INDICATOR ── -->
-  <div class="steps" id="steps-bar" style="display:none;">
-    <div class="step done" id="step1">① Login</div>
-    <div class="step active" id="step2">② Select Subjects</div>
-    <div class="step" id="step3">③ Schedule</div>
-    <div class="step" id="step4">④ Payment</div>
+  <!-- Steps -->
+  <div id="steps-bar">
+    <div class="steps-container">
+      <div class="step done" id="step1"><span class="step-num">✔</span>Login</div>
+      <div class="step" id="step2"><span class="step-num">②</span>Subjects</div>
+      <div class="step" id="step3"><span class="step-num">③</span>Schedule</div>
+      <div class="step" id="step4"><span class="step-num">④</span>Payment</div>
+    </div>
   </div>
 
-  <!-- ─────── LOGIN SCREEN ─────── -->
+  <!-- LOGIN / SIGNUP -->
   <div class="screen active" id="screen-login">
-    <div style="max-width:420px; margin:4rem auto;">
-      <h1 class="page-title">Student Login</h1>
-      <p class="page-sub">Sign in to begin your enrollment.</p>
-      <div class="card">
-        <div id="login-error" class="alert alert-error" style="display:none;"></div>
-        <div class="form-group">
-          <label>Student ID</label>
-          <input type="text" id="student-id" placeholder="e.g. 2024-00123" />
+    <div class="auth-wrap">
+      <div class="auth-box">
+        <div class="auth-hero">
+          <div class="auth-hero-icon">🎓</div>
+          <div class="auth-hero-logo">Uni<span>Enroll</span></div>
+          <p>University Online Enrollment Portal</p>
         </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="student-pass" placeholder="••••••••" />
+        <div class="auth-body">
+          <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+            <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+          </div>
+          <!-- LOGIN -->
+          <div id="form-login">
+            <div id="login-error" class="alert alert-error" style="display:none;"><span class="alert-icon">⚠</span><span id="login-error-msg"></span></div>
+            <div class="demo-hint">🎯 Demo &nbsp;·&nbsp; ID: <code>2024-00123</code> &nbsp; Password: <code>password</code></div>
+            <div class="form-group">
+              <label>Student ID</label>
+              <div class="input-icon-wrap">
+                <span class="input-icon">🪪</span>
+                <input type="text" id="student-id" placeholder="e.g. 2024-00123" autocomplete="username" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <div class="input-icon-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="student-pass" placeholder="••••••••" autocomplete="current-password" />
+              </div>
+            </div>
+            <div style="text-align:right; margin-bottom:1rem;">
+              <a href="#" style="font-size:.79rem;color:var(--maroon);font-weight:500;">Forgot password?</a>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="doLogin()">Sign In →</button>
+            <div class="page-footer">No account? <a onclick="switchAuthTab('signup')">Create one free</a></div>
+          </div>
+          <!-- SIGNUP -->
+          <div id="form-signup" style="display:none;">
+            <div id="signup-error" class="alert alert-error" style="display:none;"><span class="alert-icon">⚠</span><span id="signup-error-msg"></span></div>
+            <div id="signup-success" class="alert alert-success" style="display:none;"><span class="alert-icon">✔</span><span id="signup-success-msg"></span></div>
+            <div class="form-row">
+              <div class="form-group"><label>First Name</label><input type="text" id="reg-fname" placeholder="Juan" autocomplete="given-name" /></div>
+              <div class="form-group"><label>Last Name</label><input type="text" id="reg-lname" placeholder="dela Cruz" autocomplete="family-name" /></div>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <div class="input-icon-wrap">
+                <span class="input-icon">✉</span>
+                <input type="email" id="reg-email" placeholder="juan@university.edu.ph" autocomplete="email" inputmode="email" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Program / Course</label>
+              <select id="reg-program">
+                <option value="">Select program…</option>
+                <option>BS Computer Science</option>
+                <option>BS Information Technology</option>
+                <option>BS Business Administration</option>
+                <option>BS Nursing</option>
+                <option>BS Education</option>
+                <option>BS Engineering</option>
+                <option>AB Communication</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Password</label><input type="password" id="reg-pass" placeholder="Min. 8 chars" autocomplete="new-password" /></div>
+              <div class="form-group"><label>Confirm</label><input type="password" id="reg-pass2" placeholder="Re-enter" autocomplete="new-password" /></div>
+            </div>
+            <button class="btn btn-gold btn-full" onclick="doSignup()">Create Account 🎓</button>
+            <div class="page-footer">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></div>
+          </div>
         </div>
-        <div style="margin-top:.5rem; font-size:.8rem; color:var(--muted); margin-bottom:1.25rem;">
-          Demo credentials: <code style="font-family:'DM Mono',monospace;">2024-00123</code> / <code style="font-family:'DM Mono',monospace;">password</code>
-        </div>
-        <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Login →</button>
       </div>
     </div>
   </div>
 
-  <!-- ─────── SUBJECT SELECTION ─────── -->
+  <!-- SUBJECTS -->
   <div class="screen" id="screen-subjects">
-    <h1 class="page-title">Subject Selection</h1>
-    <p class="page-sub">Choose your subjects. Max 6 units. Slots update in real-time.</p>
-    <div id="conflict-alert" class="alert alert-error" style="display:none;"></div>
-    <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-bottom:1.5rem;">
-      <div class="stat-card" style="flex:1; min-width:150px;">
-        <div class="stat-val" id="sel-count">0</div>
-        <div class="stat-label">Subjects Selected</div>
-      </div>
-      <div class="stat-card" style="flex:1; min-width:150px;">
-        <div class="stat-val" id="sel-units">0</div>
-        <div class="stat-label">Units</div>
-      </div>
-      <div class="stat-card" style="flex:1; min-width:150px;">
-        <div class="stat-val" id="sel-fee">₱0</div>
-        <div class="stat-label">Est. Fee</div>
-      </div>
-      <button class="btn btn-accent" onclick="goToSchedule()">View Schedule →</button>
+    <h1 class="page-title">Subject <span>Selection</span></h1>
+    <p class="page-sub">Tap a subject to select it. Slots update in real-time.</p>
+    <div id="conflict-alert" class="alert alert-error" style="display:none;"><span class="alert-icon">⚠</span><span id="conflict-msg"></span></div>
+    <div class="sel-stats-row">
+      <div class="sel-stat"><div class="stat-val" id="sel-count">0</div><div class="stat-label">Subjects</div></div>
+      <div class="sel-stat"><div class="stat-val" id="sel-units">0</div><div class="stat-label">Units</div></div>
+      <div class="sel-stat"><div class="stat-val" id="sel-fee">₱0</div><div class="stat-label">Est. Fee</div></div>
     </div>
+    <button class="btn btn-primary btn-full" onclick="goToSchedule()" style="margin-bottom:1rem;">View Schedule →</button>
     <div class="subject-grid" id="subject-grid"></div>
   </div>
 
-  <!-- ─────── SCHEDULE ─────── -->
+  <!-- SCHEDULE -->
   <div class="screen" id="screen-schedule">
-    <h1 class="page-title">Your Schedule</h1>
-    <p class="page-sub">Auto-generated from your selected subjects. Check for conflicts.</p>
-    <div id="sched-conflict" class="alert alert-error" style="display:none;"></div>
-    <div id="sched-ok" class="alert alert-success" style="display:none;">✔ No schedule conflicts detected.</div>
-    <div class="card">
-      <table class="sched-table" id="sched-table">
-        <thead><tr>
-          <th>Code</th><th>Subject</th><th>Day</th><th>Time</th><th>Room</th><th>Units</th>
-        </tr></thead>
-        <tbody id="sched-body"></tbody>
-      </table>
-      <div id="sched-empty" style="text-align:center; padding:2rem; color:var(--muted);">No subjects selected yet.</div>
+    <h1 class="page-title">Your <span>Schedule</span></h1>
+    <p class="page-sub">Review and check for conflicts before proceeding.</p>
+    <div id="sched-conflict" class="alert alert-error" style="display:none;"><span class="alert-icon">⚠</span><span id="sched-conflict-msg"></span></div>
+    <div id="sched-ok" class="alert alert-success" style="display:none;"><span class="alert-icon">✔</span> No conflicts — you're good to go!</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="sched-table-wrap">
+        <table class="sched-table">
+          <thead><tr><th>Code</th><th>Subject</th><th>Day</th><th>Time</th><th>Room</th><th>Units</th></tr></thead>
+          <tbody id="sched-body"></tbody>
+        </table>
+      </div>
+      <div id="sched-empty" style="text-align:center;padding:2.2rem 1.5rem;color:var(--muted);display:none;">
+        <div style="font-size:2.2rem;opacity:.4;margin-bottom:.4rem;">📋</div>No subjects selected yet.
+      </div>
     </div>
-    <div style="margin-top:1.5rem; display:flex; gap:1rem;">
+    <div class="action-row">
       <button class="btn btn-outline" onclick="showScreen('subjects')">← Back</button>
-      <button class="btn btn-accent" onclick="goToPayment()">Proceed to Payment →</button>
+      <button class="btn btn-gold" onclick="goToPayment()">Proceed to Payment →</button>
     </div>
   </div>
 
-  <!-- ─────── PAYMENT ─────── -->
+  <!-- PAYMENT -->
   <div class="screen" id="screen-payment">
-    <h1 class="page-title">Payment Confirmation</h1>
-    <p class="page-sub">Review your enrollment fees and confirm payment.</p>
+    <h1 class="page-title">Payment <span>Confirmation</span></h1>
+    <p class="page-sub">Review fees and complete your enrollment.</p>
     <div class="grid-2">
       <div class="card">
-        <h3 style="font-family:'DM Serif Display',serif; color:var(--primary); margin-bottom:1rem;">Fee Summary</h3>
+        <div class="card-header">💰 Fee Summary</div>
         <div id="fee-breakdown"></div>
         <hr class="divider">
         <div class="form-group">
           <label>Payment Method</label>
-          <select id="pay-method">
-            <option>Online Banking</option>
-            <option>Credit / Debit Card</option>
-            <option>GCash / Maya</option>
-            <option>Over the Counter</option>
-          </select>
+          <div class="pay-methods">
+            <div class="pay-method-opt selected" onclick="selectPayMethod(this,'Online Banking')"><span class="pm-icon">🏦</span> Online Banking</div>
+            <div class="pay-method-opt" onclick="selectPayMethod(this,'Credit/Debit Card')"><span class="pm-icon">💳</span> Card</div>
+            <div class="pay-method-opt" onclick="selectPayMethod(this,'GCash / Maya')"><span class="pm-icon">📱</span> GCash / Maya</div>
+            <div class="pay-method-opt" onclick="selectPayMethod(this,'Over the Counter')"><span class="pm-icon">🏫</span> Counter</div>
+          </div>
         </div>
         <div id="pay-msg" style="display:none;"></div>
-        <button class="btn btn-gold" style="width:100%; margin-top:.5rem;" onclick="confirmPayment()">Confirm & Pay</button>
+        <button class="btn btn-gold btn-full" id="confirm-pay-btn" onclick="confirmPayment()">✔ Confirm &amp; Pay</button>
+        <div style="margin-top:.6rem;"><button class="btn btn-outline btn-full btn-sm" onclick="showScreen('schedule')">← Back</button></div>
       </div>
       <div class="card">
-        <h3 style="font-family:'DM Serif Display',serif; color:var(--primary); margin-bottom:1rem;">Enrolled Subjects</h3>
+        <div class="card-header">📚 Enrolled Subjects</div>
         <div id="pay-subjects"></div>
       </div>
     </div>
   </div>
 
-  <!-- ─────── ADMIN DASHBOARD ─────── -->
+  <!-- ADMIN -->
   <div class="screen" id="screen-admin">
-    <h1 class="page-title">Admin Dashboard</h1>
+    <h1 class="page-title">Admin <span>Dashboard</span></h1>
     <p class="page-sub">Real-time slot monitoring and enrollment overview.</p>
     <div class="stats">
-      <div class="stat-card"><div class="stat-val" id="adm-enrolled">0</div><div class="stat-label">Students Enrolled</div></div>
-      <div class="stat-card"><div class="stat-val" id="adm-active">0</div><div class="stat-label">Active Sessions</div></div>
-      <div class="stat-card"><div class="stat-val" id="adm-conflicts">0</div><div class="stat-label">Conflicts Prevented</div></div>
-      <div class="stat-card"><div class="stat-val" id="adm-revenue">₱0</div><div class="stat-label">Revenue</div></div>
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val" id="adm-enrolled">0</div><div class="stat-label">Enrolled</div></div>
+      <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-val" id="adm-active">0</div><div class="stat-label">Active</div></div>
+      <div class="stat-card"><div class="stat-icon">🚫</div><div class="stat-val" id="adm-conflicts">0</div><div class="stat-label">Conflicts</div></div>
+      <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-val" id="adm-revenue">₱0</div><div class="stat-label">Revenue</div></div>
     </div>
-    <div class="card">
-      <h3 style="font-family:'DM Serif Display',serif; margin-bottom:1rem;">Subject Slot Status</h3>
-      <div id="admin-table"></div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="padding:.9rem 1.1rem .55rem;border-bottom:2px solid var(--gold);">
+        <div class="card-header" style="margin-bottom:0;padding-bottom:0;border-bottom:none;">📊 Subject Slot Status</div>
+      </div>
+      <div class="sched-table-wrap"><div id="admin-table"></div></div>
     </div>
-    <div style="margin-top:1rem;">
-      <button class="btn btn-outline btn-sm" onclick="simulateEnrollments()">⚡ Simulate 50 Enrollments</button>
-      <button class="btn btn-danger btn-sm" style="margin-left:.5rem;" onclick="resetAll()">↺ Reset All</button>
+    <div class="admin-actions">
+      <button class="btn btn-outline btn-sm" onclick="simulateEnrollments()">⚡ Simulate 50</button>
+      <button class="btn btn-danger btn-sm" onclick="resetAll()">↺ Reset All</button>
     </div>
   </div>
 
-</div><!-- /container -->
+</div>
 
-<!-- ═══════════════════════════════ SCRIPT ═══════════════════════════════ -->
+<!-- ══ BOTTOM NAV ══ -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bnav-btn active" id="bnav-login" onclick="gotoLogin()">
+      <span class="bnav-icon">🔑</span><span class="bnav-label">Login</span>
+    </button>
+    <button class="bnav-btn locked" id="bnav-subjects" onclick="requireAuth('subjects')">
+      <span class="bnav-icon">📚</span><span class="bnav-label">Subjects</span>
+    </button>
+    <button class="bnav-btn locked" id="bnav-schedule" onclick="requireAuth('schedule')">
+      <span class="bnav-icon">🗓</span><span class="bnav-label">Schedule</span>
+    </button>
+    <button class="bnav-btn locked" id="bnav-payment" onclick="requireAuth('payment')">
+      <span class="bnav-icon">💳</span><span class="bnav-label">Payment</span>
+    </button>
+    <button class="bnav-btn" id="bnav-admin" onclick="showScreen('admin')">
+      <span class="bnav-icon">⚙️</span><span class="bnav-label">Admin</span>
+    </button>
+  </div>
+</nav>
+
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────────
-const SUBJECTS = [
-  { code:"CS101", name:"Intro to Computing",   day:"Mon/Thu", time:"07:30–09:00", room:"BL201", units:3, slots:40, enrolled:28, fee:1500 },
-  { code:"CS102", name:"Programming 1",         day:"Tue/Fri", time:"09:00–10:30", room:"BL202", units:3, slots:40, enrolled:40, fee:1500 },
-  { code:"CS201", name:"Data Structures",       day:"Mon/Wed", time:"10:30–12:00", room:"BL301", units:3, slots:35, enrolled:20, fee:1500 },
-  { code:"CS202", name:"Discrete Mathematics",  day:"Tue/Thu", time:"13:00–14:30", room:"LH101", units:3, slots:35, enrolled:15, fee:1200 },
-  { code:"CS301", name:"Database Systems",      day:"Wed/Fri", time:"07:30–09:00", room:"BL401", units:3, slots:30, enrolled:29, fee:1500 },
-  { code:"CS302", name:"Computer Networks",     day:"Mon/Thu", time:"13:00–14:30", room:"BL202", units:3, slots:30, enrolled:10, fee:1500 },
-  { code:"CS401", name:"Software Engineering",  day:"Tue/Fri", time:"15:00–16:30", room:"LH201", units:3, slots:25, enrolled:24, fee:1500 },
-  { code:"GE001", name:"Filipino 1",            day:"Mon",     time:"14:30–16:00", room:"AH101", units:3, slots:50, enrolled:32, fee:900  },
-  { code:"GE002", name:"English Communication", day:"Wed",     time:"09:00–10:30", room:"AH102", units:3, slots:50, enrolled:47, fee:900  },
-  { code:"PE001", name:"Physical Education 1",  day:"Fri",     time:"07:30–09:00", room:"GYM",   units:2, slots:60, enrolled:18, fee:600  },
-  { code:"NS001", name:"Natural Science",       day:"Tue/Thu", time:"10:30–12:00", room:"SCI201",units:3, slots:40, enrolled:33, fee:1100 },
-  { code:"HUM01", name:"Humanities",            day:"Wed/Fri", time:"13:00–14:30", room:"AH201", units:3, slots:45, enrolled:22, fee:900  },
+const SUBJECTS=[
+  {code:"CS101",name:"Intro to Computing",   day:"Mon/Thu",time:"07:30–09:00",room:"BL201", units:3,slots:40,enrolled:28,fee:1500},
+  {code:"CS102",name:"Programming 1",         day:"Tue/Fri",time:"09:00–10:30",room:"BL202", units:3,slots:40,enrolled:40,fee:1500},
+  {code:"CS201",name:"Data Structures",       day:"Mon/Wed",time:"10:30–12:00",room:"BL301", units:3,slots:35,enrolled:20,fee:1500},
+  {code:"CS202",name:"Discrete Mathematics",  day:"Tue/Thu",time:"13:00–14:30",room:"LH101", units:3,slots:35,enrolled:15,fee:1200},
+  {code:"CS301",name:"Database Systems",      day:"Wed/Fri",time:"07:30–09:00",room:"BL401", units:3,slots:30,enrolled:29,fee:1500},
+  {code:"CS302",name:"Computer Networks",     day:"Mon/Thu",time:"13:00–14:30",room:"BL202", units:3,slots:30,enrolled:10,fee:1500},
+  {code:"CS401",name:"Software Engineering",  day:"Tue/Fri",time:"15:00–16:30",room:"LH201", units:3,slots:25,enrolled:24,fee:1500},
+  {code:"GE001",name:"Filipino 1",            day:"Mon",    time:"14:30–16:00",room:"AH101", units:3,slots:50,enrolled:32,fee:900 },
+  {code:"GE002",name:"English Communication", day:"Wed",    time:"09:00–10:30",room:"AH102", units:3,slots:50,enrolled:47,fee:900 },
+  {code:"PE001",name:"Physical Education 1",  day:"Fri",    time:"07:30–09:00",room:"GYM",   units:2,slots:60,enrolled:18,fee:600 },
+  {code:"NS001",name:"Natural Science",       day:"Tue/Thu",time:"10:30–12:00",room:"SCI201",units:3,slots:40,enrolled:33,fee:1100},
+  {code:"HUM01",name:"Humanities",            day:"Wed/Fri",time:"13:00–14:30",room:"AH201", units:3,slots:45,enrolled:22,fee:900 },
 ];
+const ACCOUNTS=[{id:'2024-00123',pass:'password',name:'Juan dela Cruz',year:3,program:'BS Computer Science'}];
+let selectedSubjects=new Set(), currentStudent=null, selectedPayMethod='Online Banking';
+let adminStats={enrolled:1247,active:312,conflicts:58,revenue:2340000};
 
-let selectedSubjects = new Set();
-let currentStudent = null;
-let adminStats = { enrolled: 1247, active: 312, conflicts: 58, revenue: 2340000 };
-
-// ── NAVIGATION ────────────────────────────────────────────────────────────
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  document.querySelectorAll('header nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('nav-' + name).classList.add('active');
-  const stepsBar = document.getElementById('steps-bar');
-  if (name === 'login') { stepsBar.style.display = 'none'; return; }
-  stepsBar.style.display = 'flex';
-  ['step2','step3','step4'].forEach(s => document.getElementById(s).className = 'step');
-  if (name === 'subjects') document.getElementById('step2').className = 'step active';
-  if (name === 'schedule') { document.getElementById('step2').className = 'step done'; document.getElementById('step3').className = 'step active'; }
-  if (name === 'payment')  { document.getElementById('step2').className = 'step done'; document.getElementById('step3').className = 'step done'; document.getElementById('step4').className = 'step active'; }
-  if (name === 'admin')    stepsBar.style.display = 'none';
-  if (name === 'subjects') renderSubjects();
-  if (name === 'schedule') renderSchedule();
-  if (name === 'payment')  renderPayment();
-  if (name === 'admin')    renderAdmin();
+function switchAuthTab(tab){
+  document.getElementById('form-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('form-signup').style.display=tab==='signup'?'block':'none';
+  document.getElementById('tab-login').classList.toggle('active',tab==='login');
+  document.getElementById('tab-signup').classList.toggle('active',tab==='signup');
 }
 
-// ── LOGIN ─────────────────────────────────────────────────────────────────
-function doLogin() {
-  const id   = document.getElementById('student-id').value.trim();
-  const pass = document.getElementById('student-pass').value;
-  const err  = document.getElementById('login-error');
-  if (id === '2024-00123' && pass === 'password') {
-    currentStudent = { id, name: 'Juan dela Cruz', year: 3, program: 'BS Computer Science' };
-    err.style.display = 'none';
-    showScreen('subjects');
-  } else {
-    err.style.display = 'block';
-    err.textContent = 'Invalid Student ID or Password. Please try again.';
-  }
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('nav-'+name); if(nb) nb.classList.add('active');
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  const bnb=document.getElementById('bnav-'+name); if(bnb) bnb.classList.add('active');
+  const sb=document.getElementById('steps-bar');
+  sb.style.display=['login','admin'].includes(name)?'none':'block';
+  document.getElementById('step2').querySelector('.step-num').textContent='②';
+  document.getElementById('step3').querySelector('.step-num').textContent='③';
+  document.getElementById('step4').querySelector('.step-num').textContent='④';
+  ['step2','step3','step4'].forEach(s=>document.getElementById(s).className='step');
+  if(name==='subjects'){document.getElementById('step2').className='step active';renderSubjects();}
+  if(name==='schedule'){document.getElementById('step2').className='step done';document.getElementById('step2').querySelector('.step-num').textContent='✔';document.getElementById('step3').className='step active';renderSchedule();}
+  if(name==='payment'){['step2','step3'].forEach(s=>{document.getElementById(s).className='step done';document.getElementById(s).querySelector('.step-num').textContent='✔';});document.getElementById('step4').className='step active';renderPayment();}
+  if(name==='admin') renderAdmin();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ── SUBJECTS ──────────────────────────────────────────────────────────────
-function renderSubjects() {
-  const grid = document.getElementById('subject-grid');
-  grid.innerHTML = '';
-  SUBJECTS.forEach((s, i) => {
-    const full     = s.enrolled >= s.slots;
-    const pct      = Math.round((s.enrolled / s.slots) * 100);
-    const sel      = selectedSubjects.has(i);
-    const fillColor = pct >= 100 ? '#c0392b' : pct >= 80 ? '#d4a853' : '#4c8b5e';
-    const div = document.createElement('div');
-    div.className = 'subject-card' + (full ? ' full' : '') + (sel ? ' selected' : '');
-    div.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <span class="subj-code">${s.code}</span>
-        <span class="badge ${full ? 'badge-red' : pct>=80 ? 'badge-gold' : 'badge-green'}">${full ? 'FULL' : pct>=80 ? 'LIMITED' : 'OPEN'}</span>
-      </div>
+function requireAuth(s){if(!currentStudent){gotoLogin();return;}showScreen(s);}
+function gotoLogin(){showScreen('login');document.getElementById('steps-bar').style.display='none';}
+
+function unlockNav(){
+  ['subjects','schedule','payment'].forEach(n=>{
+    const b=document.getElementById('nav-'+n);b.classList.remove('locked');b.onclick=()=>showScreen(n);
+    const bn=document.getElementById('bnav-'+n);bn.classList.remove('locked');bn.onclick=()=>showScreen(n);
+  });
+  const nl=document.getElementById('nav-login');nl.textContent='🚪 Logout';nl.onclick=doLogout;
+  const bnl=document.getElementById('bnav-login');
+  bnl.querySelector('.bnav-icon').textContent='🚪';bnl.querySelector('.bnav-label').textContent='Logout';bnl.onclick=doLogout;
+  document.getElementById('desktop-user-badge').style.display='inline-flex';
+  document.getElementById('nav-username').textContent=currentStudent.name.split(' ')[0];
+  document.getElementById('nav-user-badge-mobile').style.display='inline-flex';
+  document.getElementById('nav-username-mobile').textContent=currentStudent.name.split(' ')[0];
+  document.getElementById('mobile-logout-btn').style.display='block';
+}
+
+function doLogout(){
+  currentStudent=null;selectedSubjects.clear();
+  ['subjects','schedule','payment'].forEach(n=>{
+    const b=document.getElementById('nav-'+n);b.classList.add('locked');b.onclick=()=>requireAuth(n);
+    const bn=document.getElementById('bnav-'+n);bn.classList.add('locked');bn.onclick=()=>requireAuth(n);
+  });
+  const nl=document.getElementById('nav-login');nl.textContent='🔑 Login';nl.onclick=gotoLogin;
+  const bnl=document.getElementById('bnav-login');
+  bnl.querySelector('.bnav-icon').textContent='🔑';bnl.querySelector('.bnav-label').textContent='Login';bnl.onclick=gotoLogin;
+  document.getElementById('desktop-user-badge').style.display='none';
+  document.getElementById('nav-user-badge-mobile').style.display='none';
+  document.getElementById('mobile-logout-btn').style.display='none';
+  gotoLogin();
+}
+
+function doLogin(){
+  const id=document.getElementById('student-id').value.trim(),pass=document.getElementById('student-pass').value;
+  const eb=document.getElementById('login-error'),em=document.getElementById('login-error-msg');
+  if(!id||!pass){eb.style.display='flex';em.textContent='Please enter your Student ID and password.';return;}
+  const a=ACCOUNTS.find(a=>a.id===id&&a.pass===pass);
+  if(a){currentStudent={...a};eb.style.display='none';unlockNav();showScreen('subjects');}
+  else{eb.style.display='flex';em.textContent='Invalid Student ID or password. Please try again.';}
+}
+
+function doSignup(){
+  const fname=document.getElementById('reg-fname').value.trim(),lname=document.getElementById('reg-lname').value.trim();
+  const email=document.getElementById('reg-email').value.trim(),program=document.getElementById('reg-program').value;
+  const pass=document.getElementById('reg-pass').value,pass2=document.getElementById('reg-pass2').value;
+  const eb=document.getElementById('signup-error'),sb=document.getElementById('signup-success');
+  eb.style.display='none';sb.style.display='none';
+  const se=m=>{document.getElementById('signup-error-msg').textContent=m;eb.style.display='flex';};
+  if(!fname||!lname){se('Please enter your full name.');return;}
+  if(!email||!email.includes('@')){se('Please enter a valid email address.');return;}
+  if(!program){se('Please select your program.');return;}
+  if(pass.length<8){se('Password must be at least 8 characters.');return;}
+  if(pass!==pass2){se('Passwords do not match.');return;}
+  const newId=`${new Date().getFullYear()}-${String(ACCOUNTS.length+100).padStart(5,'0')}`;
+  ACCOUNTS.push({id:newId,pass,name:`${fname} ${lname}`,year:1,program});
+  sb.style.display='flex';document.getElementById('signup-success-msg').innerHTML=`Account created! ID: <strong>${newId}</strong>. You can now sign in.`;
+  ['reg-fname','reg-lname','reg-email','reg-pass','reg-pass2'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('reg-program').value='';
+  setTimeout(()=>switchAuthTab('login'),2500);
+}
+
+function renderSubjects(){
+  const grid=document.getElementById('subject-grid');grid.innerHTML='';
+  SUBJECTS.forEach((s,i)=>{
+    const full=s.enrolled>=s.slots,pct=Math.round(s.enrolled/s.slots*100),sel=selectedSubjects.has(i);
+    const fc=pct>=100?'#C0392B':pct>=80?'#D4A800':'#7B1D1D';
+    const d=document.createElement('div');
+    d.className='subject-card'+(full?' full':'')+(sel?' selected':'');
+    d.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <span class="subj-code">${s.code}</span>
+      <span class="badge ${full?'badge-red':pct>=80?'badge-gold':'badge-green'}">${full?'FULL':pct>=80?'LIMITED':'OPEN'}</span></div>
       <div class="subj-name">${s.name}</div>
-      <div class="subj-meta">${s.day} · ${s.time} · ${s.room}</div>
-      <div class="subj-meta" style="margin-top:.3rem;">${s.units} units · ₱${s.fee.toLocaleString()}</div>
-      <div class="slot-bar"><div class="slot-fill" style="width:${pct}%; background:${fillColor};"></div></div>
-      <div style="font-size:.75rem; color:var(--muted); margin-top:.3rem;">${s.slots - s.enrolled} / ${s.slots} slots remaining</div>
-      ${sel ? '<div style="margin-top:.5rem; font-size:.8rem; color:var(--accent); font-weight:600;">✔ Selected</div>' : ''}
-    `;
-    if (!full) div.onclick = () => toggleSubject(i);
-    grid.appendChild(div);
+      <div class="subj-meta">📅 ${s.day} &nbsp; ⏰ ${s.time}<br>🚪 ${s.room} &nbsp; 📖 ${s.units} units &nbsp; 💰 ₱${s.fee.toLocaleString()}</div>
+      <div class="slot-bar"><div class="slot-fill" style="width:${pct}%;background:${fc};"></div></div>
+      <div style="font-size:.69rem;color:var(--muted);margin-top:.28rem;">${s.slots-s.enrolled}/${s.slots} slots remaining</div>
+      ${sel?'<div class="sel-check">✔ Selected</div>':''}`;
+    if(!full) d.onclick=()=>toggleSubject(i);
+    grid.appendChild(d);
   });
   updateSelStats();
 }
 
-function toggleSubject(i) {
-  const s = SUBJECTS[i];
-  const ca = document.getElementById('conflict-alert');
-  if (selectedSubjects.has(i)) {
-    selectedSubjects.delete(i);
-    ca.style.display = 'none';
-  } else {
-    // Check time conflict
-    const conflict = checkConflict(i);
-    if (conflict) {
-      ca.style.display = 'block';
-      ca.textContent = `⚠ Schedule conflict with ${SUBJECTS[conflict].code} (${SUBJECTS[conflict].day} ${SUBJECTS[conflict].time}). Cannot add ${s.code}.`;
-      return;
-    }
-    // Check slots
-    if (s.enrolled >= s.slots) return;
-    selectedSubjects.add(i);
-    ca.style.display = 'none';
+function toggleSubject(i){
+  const s=SUBJECTS[i],ca=document.getElementById('conflict-alert'),cm=document.getElementById('conflict-msg');
+  if(selectedSubjects.has(i)){selectedSubjects.delete(i);ca.style.display='none';}
+  else{
+    const c=checkConflict(i);
+    if(c!==null){ca.style.display='flex';cm.textContent=`Conflict with ${SUBJECTS[c].code} (${SUBJECTS[c].day} ${SUBJECTS[c].time}). Cannot add ${s.code}.`;return;}
+    if(s.enrolled>=s.slots) return;
+    selectedSubjects.add(i);ca.style.display='none';
   }
   renderSubjects();
 }
 
-function checkConflict(newIdx) {
-  const newS = SUBJECTS[newIdx];
-  for (let idx of selectedSubjects) {
-    const ex = SUBJECTS[idx];
-    // Simple overlap check on day+time string
-    if (ex.day === newS.day && ex.time === newS.time) return idx;
-    // Check if any shared day and overlapping time
-    const exDays  = ex.day.split('/');
-    const newDays = newS.day.split('/');
-    const sharedDay = exDays.some(d => newDays.includes(d));
-    if (sharedDay && timesOverlap(ex.time, newS.time)) return idx;
-  }
+function checkConflict(ni){
+  const ns=SUBJECTS[ni];
+  for(let idx of selectedSubjects){const ex=SUBJECTS[idx];if(ex.day.split('/').some(d=>ns.day.split('/').includes(d))&&timesOverlap(ex.time,ns.time)) return idx;}
   return null;
 }
-
-function timesOverlap(t1, t2) {
-  const parse = t => { const [s,e] = t.split('–'); return [toMin(s), toMin(e)]; };
-  const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
-  const [s1,e1] = parse(t1), [s2,e2] = parse(t2);
-  return s1 < e2 && s2 < e1;
+function timesOverlap(t1,t2){
+  const p=t=>{const[s,e]=t.split('–'),m=t=>{const[h,mm]=t.split(':').map(Number);return h*60+mm};return[m(s),m(e)];};
+  const[s1,e1]=p(t1),[s2,e2]=p(t2);return s1<e2&&s2<e1;
 }
-
-function updateSelStats() {
-  const arr = [...selectedSubjects].map(i => SUBJECTS[i]);
-  document.getElementById('sel-count').textContent = arr.length;
-  document.getElementById('sel-units').textContent = arr.reduce((a,s) => a+s.units, 0);
-  document.getElementById('sel-fee').textContent = '₱' + arr.reduce((a,s) => a+s.fee, 0).toLocaleString();
+function updateSelStats(){
+  const a=[...selectedSubjects].map(i=>SUBJECTS[i]);
+  document.getElementById('sel-count').textContent=a.length;
+  document.getElementById('sel-units').textContent=a.reduce((x,s)=>x+s.units,0);
+  document.getElementById('sel-fee').textContent='₱'+a.reduce((x,s)=>x+s.fee,0).toLocaleString();
 }
-
-function goToSchedule() {
-  if (selectedSubjects.size === 0) { alert('Please select at least one subject.'); return; }
+function goToSchedule(){
+  if(!selectedSubjects.size){const ca=document.getElementById('conflict-alert');ca.style.display='flex';document.getElementById('conflict-msg').textContent='Please select at least one subject first.';return;}
   showScreen('schedule');
 }
 
-// ── SCHEDULE ──────────────────────────────────────────────────────────────
-function renderSchedule() {
-  const tbody  = document.getElementById('sched-body');
-  const empty  = document.getElementById('sched-empty');
-  const ok     = document.getElementById('sched-ok');
-  const ca     = document.getElementById('sched-conflict');
-  const arr    = [...selectedSubjects].map(i => SUBJECTS[i]);
-  tbody.innerHTML = '';
-  if (arr.length === 0) { empty.style.display='block'; ok.style.display='none'; ca.style.display='none'; return; }
-  empty.style.display = 'none';
-  // Detect conflicts
-  let conflicts = [];
-  for (let a = 0; a < arr.length; a++) for (let b = a+1; b < arr.length; b++) {
-    const A = arr[a], B = arr[b];
-    const daysA = A.day.split('/'), daysB = B.day.split('/');
-    if (daysA.some(d=>daysB.includes(d)) && timesOverlap(A.time, B.time))
-      conflicts.push(`${A.code} and ${B.code}`);
-  }
-  if (conflicts.length) { ca.style.display='block'; ca.textContent='⚠ Conflict detected: ' + conflicts.join(', '); ok.style.display='none'; }
-  else { ok.style.display='block'; ca.style.display='none'; }
-  arr.forEach(s => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td style="font-family:'DM Mono',monospace;font-size:.82rem;">${s.code}</td><td>${s.name}</td><td>${s.day}</td><td>${s.time}</td><td>${s.room}</td><td>${s.units}</td>`;
-    tbody.appendChild(tr);
-  });
+function renderSchedule(){
+  const tb=document.getElementById('sched-body'),em=document.getElementById('sched-empty'),
+        ok=document.getElementById('sched-ok'),ca=document.getElementById('sched-conflict'),cm=document.getElementById('sched-conflict-msg');
+  const arr=[...selectedSubjects].map(i=>SUBJECTS[i]);tb.innerHTML='';
+  if(!arr.length){em.style.display='block';ok.style.display='none';ca.style.display='none';return;}
+  em.style.display='none';
+  const cf=[];
+  for(let a=0;a<arr.length;a++) for(let b=a+1;b<arr.length;b++)
+    if(arr[a].day.split('/').some(d=>arr[b].day.split('/').includes(d))&&timesOverlap(arr[a].time,arr[b].time)) cf.push(`${arr[a].code}&${arr[b].code}`);
+  if(cf.length){ca.style.display='flex';cm.textContent='Conflict: '+cf.join(', ');ok.style.display='none';}
+  else{ok.style.display='flex';ca.style.display='none';}
+  arr.forEach(s=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="code-cell">${s.code}</td><td style="font-weight:500;">${s.name}</td><td>${s.day}</td><td style="white-space:nowrap;">${s.time}</td><td>${s.room}</td><td style="font-weight:700;">${s.units}</td>`;tb.appendChild(tr);});
 }
-
-function goToPayment() {
-  const ca = document.getElementById('sched-conflict');
-  if (ca.style.display !== 'none' && ca.textContent) { alert('Please resolve schedule conflicts before proceeding.'); return; }
+function goToPayment(){
+  if(document.getElementById('sched-conflict').style.display!=='none'&&document.getElementById('sched-conflict-msg').textContent){alert('Please resolve schedule conflicts first.');return;}
   showScreen('payment');
 }
 
-// ── PAYMENT ───────────────────────────────────────────────────────────────
-function renderPayment() {
-  const arr = [...selectedSubjects].map(i => SUBJECTS[i]);
-  const fb  = document.getElementById('fee-breakdown');
-  const ps  = document.getElementById('pay-subjects');
-  const miscFee  = 500, regFee = 250;
-  const tuition  = arr.reduce((a,s) => a+s.fee, 0);
-  const total    = tuition + miscFee + regFee;
-  fb.innerHTML = `
-    ${arr.map(s => `<div class="fee-row"><span>${s.code} – ${s.name}</span><span>₱${s.fee.toLocaleString()}</span></div>`).join('')}
-    <div class="fee-row"><span>Miscellaneous Fee</span><span>₱${miscFee.toLocaleString()}</span></div>
-    <div class="fee-row"><span>Registration Fee</span><span>₱${regFee.toLocaleString()}</span></div>
-    <div class="fee-row total"><span>TOTAL</span><span>₱${total.toLocaleString()}</span></div>
-  `;
-  ps.innerHTML = arr.map(s => `
-    <div style="padding:.55rem 0; border-bottom:1px solid var(--border); font-size:.88rem;">
-      <strong>${s.code}</strong> — ${s.name}<br>
-      <span style="color:var(--muted);">${s.day} · ${s.time} · ${s.units} units</span>
-    </div>`).join('');
-  document.getElementById('pay-msg').style.display = 'none';
+function selectPayMethod(el,m){document.querySelectorAll('.pay-method-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');selectedPayMethod=m;}
+function renderPayment(){
+  const arr=[...selectedSubjects].map(i=>SUBJECTS[i]),mf=500,rf=250,tu=arr.reduce((a,s)=>a+s.fee,0),tot=tu+mf+rf;
+  document.getElementById('fee-breakdown').innerHTML=arr.map(s=>`<div class="fee-row"><span style="font-size:.8rem;color:var(--muted);">${s.code} – ${s.name}</span><span style="font-weight:600;">₱${s.fee.toLocaleString()}</span></div>`).join('')
+    +`<div class="fee-row"><span>Miscellaneous Fee</span><span>₱${mf.toLocaleString()}</span></div>
+    <div class="fee-row"><span>Registration Fee</span><span>₱${rf.toLocaleString()}</span></div>
+    <div class="fee-row total"><span>TOTAL DUE</span><span>₱${tot.toLocaleString()}</span></div>`;
+  document.getElementById('pay-subjects').innerHTML=arr.map(s=>`<div class="enrolled-subj-item"><div style="font-family:'JetBrains Mono',monospace;font-size:.69rem;color:var(--maroon);font-weight:600;">${s.code}</div><div style="font-weight:600;margin:.08rem 0;">${s.name}</div><div style="color:var(--muted);font-size:.75rem;">${s.day} · ${s.time} · ${s.units} units</div></div>`).join('');
+  document.getElementById('pay-msg').style.display='none';
+  const b=document.getElementById('confirm-pay-btn');b.disabled=false;b.style.opacity='1';
+}
+function confirmPayment(){
+  const arr=[...selectedSubjects].map(i=>SUBJECTS[i]);
+  arr.forEach(s=>{s.enrolled=Math.min(s.enrolled+1,s.slots);});
+  adminStats.enrolled++;adminStats.revenue+=arr.reduce((a,s)=>a+s.fee,0)+750;
+  const ref='ENR-'+Date.now().toString().slice(-8),msg=document.getElementById('pay-msg');
+  msg.style.display='block';
+  msg.innerHTML=`<div class="receipt-box"><div style="font-size:1.8rem;margin-bottom:.35rem;">🎉</div><div style="font-weight:700;font-size:.95rem;color:var(--maroon);margin-bottom:.25rem;">Enrollment Confirmed!</div><div style="font-size:.8rem;color:var(--muted);margin-bottom:.6rem;">Paid via <strong>${selectedPayMethod}</strong></div><div class="receipt-ref">${ref}</div><div style="font-size:.7rem;color:var(--muted);margin-top:.28rem;">Reference No. — save for your records</div></div>`;
+  const b=document.getElementById('confirm-pay-btn');b.disabled=true;b.style.opacity='.4';
 }
 
-function confirmPayment() {
-  const method = document.getElementById('pay-method').value;
-  const msg    = document.getElementById('pay-msg');
-  const arr    = [...selectedSubjects].map(i => SUBJECTS[i]);
-  // Lock slots (prevent double booking)
-  arr.forEach(s => { s.enrolled = Math.min(s.enrolled + 1, s.slots); });
-  adminStats.enrolled++;
-  adminStats.revenue += arr.reduce((a,s) => a+s.fee, 0) + 750;
-  msg.style.display = 'block';
-  msg.className = 'alert alert-success';
-  msg.innerHTML = `✔ Enrollment confirmed via <strong>${method}</strong>! Reference No: <code style="font-family:'DM Mono',monospace;">ENR-${Date.now().toString().slice(-8)}</code>`;
-  document.querySelector('#screen-payment .btn-gold').disabled = true;
-  document.querySelector('#screen-payment .btn-gold').style.opacity = '.5';
+function renderAdmin(){
+  document.getElementById('adm-enrolled').textContent=adminStats.enrolled.toLocaleString();
+  document.getElementById('adm-active').textContent=adminStats.active.toLocaleString();
+  document.getElementById('adm-conflicts').textContent=adminStats.conflicts.toLocaleString();
+  document.getElementById('adm-revenue').textContent='₱'+adminStats.revenue.toLocaleString();
+  document.getElementById('admin-table').innerHTML=`<table class="sched-table" style="font-size:.78rem;"><thead><tr><th>Code</th><th>Subject</th><th>Enr.</th><th>Slots</th><th>Status</th><th>Fill</th></tr></thead><tbody>${
+    SUBJECTS.map(s=>{const pct=Math.round(s.enrolled/s.slots*100),full=s.enrolled>=s.slots,cls=full?'badge-red':pct>=80?'badge-gold':'badge-green',bc=full?'#C0392B':pct>=80?'#D4A800':'#7B1D1D';
+    return`<tr><td class="code-cell">${s.code}</td><td style="font-weight:500;">${s.name}</td><td><strong>${s.enrolled}</strong></td><td>${s.slots}</td><td><span class="badge ${cls}">${full?'FULL':pct>=80?'LOW':'OPEN'}</span></td><td><div style="display:flex;align-items:center;gap:.35rem;"><div style="flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;min-width:55px;"><div style="width:${pct}%;height:100%;background:${bc};border-radius:3px;"></div></div><span style="font-size:.7rem;font-weight:600;color:var(--maroon);min-width:26px;">${pct}%</span></div></td></tr>`;
+    }).join('')}</tbody></table>`;
 }
+function simulateEnrollments(){SUBJECTS.forEach(s=>{s.enrolled=Math.min(s.enrolled+Math.floor(Math.random()*8),s.slots);});adminStats.enrolled+=50;adminStats.active=Math.floor(Math.random()*200)+200;adminStats.conflicts+=Math.floor(Math.random()*10)+2;adminStats.revenue+=50*4500;renderAdmin();}
+function resetAll(){if(!confirm('Reset all enrollment data?')) return;const o=[28,40,20,15,29,10,24,32,47,18,33,22];SUBJECTS.forEach((s,i)=>{s.enrolled=o[i];});selectedSubjects.clear();adminStats={enrolled:1247,active:312,conflicts:58,revenue:2340000};renderAdmin();}
 
-// ── ADMIN ─────────────────────────────────────────────────────────────────
-function renderAdmin() {
-  document.getElementById('adm-enrolled').textContent = adminStats.enrolled.toLocaleString();
-  document.getElementById('adm-active').textContent   = adminStats.active.toLocaleString();
-  document.getElementById('adm-conflicts').textContent= adminStats.conflicts.toLocaleString();
-  document.getElementById('adm-revenue').textContent  = '₱' + adminStats.revenue.toLocaleString();
-  const at = document.getElementById('admin-table');
-  at.innerHTML = `<table class="sched-table" style="font-size:.83rem;">
-    <thead><tr><th>Code</th><th>Subject</th><th>Enrolled</th><th>Slots</th><th>Status</th><th>% Full</th></tr></thead>
-    <tbody>${SUBJECTS.map(s => {
-      const pct   = Math.round(s.enrolled/s.slots*100);
-      const full  = s.enrolled >= s.slots;
-      const color = full ? 'badge-red' : pct>=80 ? 'badge-gold' : 'badge-green';
-      return `<tr>
-        <td style="font-family:'DM Mono',monospace;">${s.code}</td>
-        <td>${s.name}</td>
-        <td><strong>${s.enrolled}</strong></td>
-        <td>${s.slots}</td>
-        <td><span class="badge ${color}">${full?'FULL':pct>=80?'LIMITED':'OPEN'}</span></td>
-        <td>
-          <div style="display:flex; align-items:center; gap:.5rem;">
-            <div style="flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden;">
-              <div style="width:${pct}%; height:100%; background:${full?'#c0392b':pct>=80?'#d4a853':'#4c8b5e'}; border-radius:3px;"></div>
-            </div>
-            <span>${pct}%</span>
-          </div>
-        </td>
-      </tr>`;
-    }).join('')}</tbody>
-  </table>`;
-}
-
-function simulateEnrollments() {
-  SUBJECTS.forEach(s => { s.enrolled = Math.min(s.enrolled + Math.floor(Math.random()*8), s.slots); });
-  adminStats.enrolled += 50;
-  adminStats.active = Math.floor(Math.random()*200) + 200;
-  adminStats.conflicts += Math.floor(Math.random()*10) + 2;
-  adminStats.revenue += 50 * 4500;
-  renderAdmin();
-}
-
-function resetAll() {
-  if (!confirm('Reset all enrollment data?')) return;
-  SUBJECTS.forEach((s,i) => {
-    const original = [28,40,20,15,29,10,24,32,47,18,33,22];
-    s.enrolled = original[i];
-  });
-  selectedSubjects.clear();
-  adminStats = { enrolled: 1247, active: 312, conflicts: 58, revenue: 2340000 };
-  renderAdmin();
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('screen-login').classList.contains('active')) doLogin();
-});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('screen-login').classList.contains('active')&&document.getElementById('form-login').style.display!=='none') doLogin();});
 </script>
 </body>
 </html>
