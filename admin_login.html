@@ -2,113 +2,292 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UniEnroll \u2014 Admin Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>UniEnroll — Admin Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --maroon:    #7B1D1D;
-    --maroon-dk: #5A1212;
-    --maroon-lt: #9E2A2A;
-    --gold:      #F5C518;
-    --gold-dk:   #D4A800;
-    --gold-lt:   #FDD835;
-    --white:     #FFFFFF;
-    --cream:     #FFFDF5;
-    --offwhite:  #F9F5EC;
-    --border:    #E8DFC8;
-    --text:      #1C1008;
-    --muted:     #8A7560;
-    --danger:    #C0392B;
-    --success:   #1A6B32;
-    --shadow-sm: 0 2px 8px rgba(123,29,29,.10);
-    --shadow-md: 0 6px 28px rgba(123,29,29,.14);
-    --shadow-lg: 0 16px 56px rgba(123,29,29,.18);
+    --maroon:#7B1D1D;--maroon-dk:#5A1212;--maroon-lt:#9E2A2A;
+    --gold:#F5C518;--gold-dk:#D4A800;--gold-lt:#FDD835;
+    --white:#FFFFFF;--cream:#FFFDF5;--offwhite:#F9F5EC;
+    --border:#E8DFC8;--text:#1C1008;--muted:#8A7560;
+    --danger:#C0392B;
+    --shadow-sm:0 2px 8px rgba(123,29,29,.10);
+    --shadow-lg:0 16px 56px rgba(123,29,29,.20);
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Outfit',sans-serif;background:var(--offwhite);color:var(--text);min-height:100dvh;font-size:16px;}
 
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: var(--offwhite);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  /* HEADER */
+  header{background:linear-gradient(135deg,var(--maroon-dk) 0%,var(--maroon) 60%,var(--maroon-lt) 100%);color:var(--white);padding:0 1rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(90,18,18,.35);}
+  header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold-dk),var(--gold),var(--gold-lt),var(--gold));}
+  .logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:var(--white);display:flex;align-items:center;gap:.4rem;text-decoration:none;}
+  .logo-icon{width:30px;height:30px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--maroon-dk);font-weight:800;flex-shrink:0;}
+  .logo span{color:var(--gold);}
+  .header-right{display:flex;align-items:center;gap:.5rem;}
+  .admin-badge-hdr{background:rgba(245,197,24,.18);border:1.5px solid rgba(245,197,24,.3);padding:.28rem .7rem;border-radius:20px;font-size:.7rem;font-weight:700;color:var(--gold-lt);letter-spacing:.05em;text-transform:uppercase;display:none;align-items:center;gap:.3rem;}
+  .hdr-btn{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);padding:.32rem .7rem;border-radius:7px;font-family:'Outfit',sans-serif;font-size:.76rem;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem;}
+  .hdr-btn:hover{background:rgba(245,197,24,.2);border-color:rgba(245,197,24,.5);color:var(--gold-lt);}
+  .hdr-btn.logout{border-color:rgba(192,57,43,.4);color:rgba(255,180,180,.85);}
+  .hdr-btn.logout:hover{background:rgba(192,57,43,.2);}
 
-  /* \u2500\u2500\u2500 HEADER \u2500\u2500\u2500 */
-  header {
-    background: linear-gradient(135deg, var(--maroon-dk) 0%, var(--maroon) 60%, var(--maroon-lt) 100%);
-    color: var(--white);
-    padding: 0 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 68px;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 4px 24px rgba(90,18,18,.35);
-  }
-  header::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold-dk), var(--gold), var(--gold-lt), var(--gold));
-  }
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--white);
-    display: flex; align-items: center; gap: .5rem;
-    text-decoration: none;
-    letter-spacing: .01em;
-  }
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: var(--gold);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
-    color: var(--maroon-dk);
-    font-weight: 800;
-    flex-shrink: 0;
-  }
-  .logo span { color: var(--gold); }
-  .header-badge {
-    background: rgba(245,197,24,.18);
-    border: 1.5px solid rgba(245,197,24,.35);
-    color: var(--gold-lt);
-    font-size: .8rem;
-    font-weight: 600;
-    padding: .3rem .9rem;
-    border-radius: 20px;
-    display: flex; align-items: center; gap: .4rem;
-    letter-spacing: .02em;
-  }
-  .student-link {
-    background: rgba(255,255,255,.08);
-    border: 1.5px solid rgba(255,255,255,.18);
-    color: rgba(255,255,255,.75);
-    padding: .42rem 1.05rem;
-    border-radius: 7px;
-    font-family: 'Outfit', sans-serif;
-    font-size: .83rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all .2s;
-    text-decoration: none;
-    display: inline-flex; align-items: center; gap: .3rem;
-  }
-  .student-link:hover { background: rgba(245,197,24,.15); border-color: rgba(245,197,24,.45); color: var(--gold-lt); }
+  /* SCREENS */
+  .screen{display:none;}
+  .screen.active{display:flex;align-items:center;justify-content:center;min-height:calc(100dvh - 56px);padding:.75rem .9rem 1.5rem;animation:fadeUp .3s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
-  /* \u2500\u2500\u2500 LAYOUT \u2500\u2500\u2500 */
-  .auth-wrap {
-    min-height: calc(100vh - 68px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
-    background:
-      radial-gradient(ellipse at 20% 50%, rgba(123,29,29,.08) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 20%, rgba(245,197,24,.09) 0%, transparent 50%),
-      var(--offwhite);
+  /* AUTH */
+  .auth-box{width:100%;max-width:440px;background:var(--white);border-radius:18px;box-shadow:var(--shadow-lg);border:1.5px solid var(--border);overflow:hidden;}
+  .auth-hero{background:linear-gradient(135deg,var(--maroon-dk) 0%,var(--maroon) 100%);padding:1.75rem 1.5rem 1.5rem;text-align:center;position:relative;}
+  .auth-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-lt),var(--gold),transparent);}
+  .auth-hero-icon{font-size:2rem;margin-bottom:.45rem;}
+  .auth-hero-logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--white);margin-bottom:.15rem;}
+  .auth-hero-logo span{color:var(--gold);}
+  .auth-hero p{color:rgba(255,255,255,.6);font-size:.8rem;margin-bottom:.5rem;}
+  .admin-badge-hero{display:inline-flex;align-items:center;gap:.3rem;background:rgba(245,197,24,.2);border:1px solid rgba(245,197,24,.4);padding:.22rem .75rem;border-radius:20px;font-size:.7rem;font-weight:700;color:var(--gold-lt);letter-spacing:.07em;text-transform:uppercase;}
+  .auth-body{padding:1.1rem;}
+
+  /* FORM */
+  .form-group{margin-bottom:.9rem;}
+  label{display:block;font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;}
+  input{width:100%;padding:.68rem .9rem;border:1.5px solid var(--border);border-radius:9px;font-family:'Outfit',sans-serif;font-size:.92rem;background:var(--cream);color:var(--text);transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+  input:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(123,29,29,.10);}
+  .input-icon-wrap{position:relative;}
+  .input-icon{position:absolute;left:.8rem;top:50%;transform:translateY(-50%);font-size:.84rem;color:var(--muted);pointer-events:none;}
+  .input-icon-wrap input{padding-left:2.2rem;}
+
+  /* BUTTONS */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.72rem 1.4rem;border-radius:9px;border:none;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .18s;-webkit-appearance:none;touch-action:manipulation;}
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:linear-gradient(135deg,var(--maroon),var(--maroon-lt));color:var(--white);box-shadow:0 4px 14px rgba(123,29,29,.3);}
+  .btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+  .btn-outline:hover{border-color:var(--maroon);color:var(--maroon);}
+  .btn-danger{background:var(--danger);color:var(--white);}
+  .btn-full{width:100%;}
+  .btn-sm{padding:.42rem .85rem;font-size:.8rem;border-radius:7px;}
+
+  /* ALERTS */
+  .alert{padding:.7rem .9rem;border-radius:9px;font-size:.82rem;margin-bottom:.85rem;display:flex;align-items:flex-start;gap:.45rem;line-height:1.4;}
+  .alert-icon{font-size:.88rem;flex-shrink:0;margin-top:.05rem;}
+  .alert-error{background:#fde8e8;color:#891515;border:1.5px solid #f5c6c6;}
+
+  /* DEMO HINT */
+  .demo-hint{background:linear-gradient(135deg,rgba(123,29,29,.05),rgba(245,197,24,.07));border:1.5px solid rgba(245,197,24,.35);border-radius:9px;padding:.6rem .85rem;font-size:.78rem;margin-bottom:.95rem;color:var(--maroon);line-height:1.5;}
+  .demo-hint code{font-family:'JetBrains Mono',monospace;background:rgba(123,29,29,.08);padding:.1rem .3rem;border-radius:4px;font-size:.73rem;color:var(--maroon-dk);font-weight:500;}
+
+  /* FOOTER */
+  .page-footer{text-align:center;padding:.45rem;font-size:.76rem;color:var(--muted);margin-top:.55rem;}
+  .page-footer a{color:var(--maroon);text-decoration:none;font-weight:600;}
+
+  /* DASHBOARD */
+  .dash-screen{display:none;}
+  .dash-screen.active{display:block;animation:fadeUp .3s ease;padding:.9rem;max-width:700px;margin:0 auto;}
+
+  .page-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;color:var(--maroon);margin-bottom:.2rem;line-height:1.2;}
+  .page-title span{color:var(--gold-dk);}
+  .page-sub{color:var(--muted);font-size:.82rem;margin-bottom:1.1rem;}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1rem;}
+  .stat-card{background:var(--white);border:1.5px solid var(--border);border-radius:13px;padding:1rem 1.1rem;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);}
+  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--maroon),var(--gold));}
+  .stat-val{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--maroon);line-height:1.1;}
+  .stat-label{font-size:.66rem;color:var(--muted);margin-top:.2rem;text-transform:uppercase;letter-spacing:.06em;font-weight:500;}
+  .stat-icon{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);font-size:1.5rem;opacity:.12;}
+
+  /* CARD */
+  .card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.1rem;box-shadow:var(--shadow-sm);margin-bottom:.9rem;}
+  .card-header{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--maroon);margin-bottom:.9rem;padding-bottom:.6rem;border-bottom:2px solid var(--gold);display:flex;align-items:center;gap:.4rem;}
+
+  /* TABLE */
+  .sched-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+  .sched-table thead tr{background:linear-gradient(135deg,var(--maroon-dk),var(--maroon));}
+  .sched-table th{color:var(--white);padding:.55rem .6rem;text-align:left;font-weight:600;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;}
+  .sched-table th:first-child{border-radius:7px 0 0 0;}
+  .sched-table th:last-child{border-radius:0 7px 0 0;}
+  .sched-table td{padding:.55rem .6rem;border-bottom:1px solid var(--border);}
+  .sched-table tbody tr:last-child td{border-bottom:none;}
+  .sched-table .code-cell{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--maroon);font-weight:500;}
+
+  /* BADGES */
+  .badge{display:inline-flex;align-items:center;padding:.13rem .5rem;border-radius:20px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+  .badge-green{background:#d1f0dc;color:#145e2a;}
+  .badge-red{background:#fde8e8;color:#7c1b20;}
+  .badge-gold{background:#fff3cd;color:#7a5200;}
+
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-thumb{background:rgba(123,29,29,.2);border-radius:10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="logo-icon">U</div>Uni<span>Enroll</span></div>
+  <div class="header-right">
+    <div class="admin-badge-hdr" id="admin-badge-hdr">⚙️ <span id="admin-name-hdr">Admin</span></div>
+    <a href="enrollment_system.html" class="hdr-btn">🎓 Student Portal</a>
+    <button class="hdr-btn logout" id="btn-logout" onclick="doAdminLogout()" style="display:none;">🚪 Logout</button>
+  </div>
+</header>
+
+<!-- LOGIN SCREEN -->
+<div class="screen active" id="screen-admin-login">
+  <div class="auth-box">
+    <div class="auth-hero">
+      <div class="auth-hero-icon">⚙️</div>
+      <div class="auth-hero-logo">Uni<span>Enroll</span></div>
+      <p>Restricted — Authorized Personnel Only</p>
+      <div class="admin-badge-hero">🔐 Admin Portal</div>
+    </div>
+    <div class="auth-body">
+      <div id="admin-login-error" class="alert alert-error" style="display:none;"><span class="alert-icon">⚠</span><span id="admin-err-msg"></span></div>
+      <div class="demo-hint">🔑 Demo — User: <code>admin</code> &nbsp; Pass: <code>admin123</code></div>
+      <div class="form-group">
+        <label>Admin Username</label>
+        <div class="input-icon-wrap"><span class="input-icon">👤</span><input type="text" id="admin-user-input" placeholder="Enter admin username" autocomplete="username"/></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-icon-wrap"><span class="input-icon">🔒</span><input type="password" id="admin-pass-input" placeholder="••••••••" autocomplete="current-password"/></div>
+      </div>
+      <div style="text-align:right;margin-bottom:.9rem;"><a href="#" style="font-size:.76rem;color:var(--maroon);font-weight:500;">Forgot password?</a></div>
+      <button class="btn btn-primary btn-full" onclick="doAdminLogin()">Sign In to Admin →</button>
+      <div class="page-footer">Are you a student? <a href="enrollment_system.html">Go to Student Portal</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash-screen" id="screen-admin-dash">
+  <h1 class="page-title">Admin <span>Dashboard</span></h1>
+  <p class="page-sub">Real-time slot monitoring and enrollment management.</p>
+
+  <div class="stats">
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val" id="adm-enrolled">1,247</div><div class="stat-label">Students Enrolled</div></div>
+    <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-val" id="adm-active">312</div><div class="stat-label">Active Sessions</div></div>
+    <div class="stat-card"><div class="stat-icon">🚫</div><div class="stat-val" id="adm-conflicts">58</div><div class="stat-label">Conflicts Prevented</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-val" id="adm-revenue">₱2.34M</div><div class="stat-label">Revenue</div></div>
+  </div>
+
+  <div class="card" style="overflow-x:auto;padding:.85rem;">
+    <div class="card-header">📊 Subject Slot Status</div>
+    <div id="admin-table"></div>
+  </div>
+
+  <div style="display:flex;gap:.6rem;flex-wrap:wrap;padding-bottom:1.5rem;">
+    <button class="btn btn-outline btn-sm" onclick="simulateEnrollments()">⚡ Simulate 50 Enrollments</button>
+    <button class="btn btn-danger btn-sm" onclick="resetAll()">↺ Reset All Data</button>
+  </div>
+</div>
+
+<script>
+const ADMIN_ACCOUNTS=[
+  {username:'admin',pass:'admin123',name:'System Administrator'},
+  {username:'registrar',pass:'reg2024!',name:'Registrar Office'},
+];
+const SUBJECTS=[
+  {code:"CS101",name:"Intro to Computing",day:"Mon/Thu",time:"07:30–09:00",room:"BL201",units:3,slots:40,enrolled:28,fee:1500},
+  {code:"CS102",name:"Programming 1",day:"Tue/Fri",time:"09:00–10:30",room:"BL202",units:3,slots:40,enrolled:40,fee:1500},
+  {code:"CS201",name:"Data Structures",day:"Mon/Wed",time:"10:30–12:00",room:"BL301",units:3,slots:35,enrolled:20,fee:1500},
+  {code:"CS202",name:"Discrete Mathematics",day:"Tue/Thu",time:"13:00–14:30",room:"LH101",units:3,slots:35,enrolled:15,fee:1200},
+  {code:"CS301",name:"Database Systems",day:"Wed/Fri",time:"07:30–09:00",room:"BL401",units:3,slots:30,enrolled:29,fee:1500},
+  {code:"CS302",name:"Computer Networks",day:"Mon/Thu",time:"13:00–14:30",room:"BL202",units:3,slots:30,enrolled:10,fee:1500},
+  {code:"CS401",name:"Software Engineering",day:"Tue/Fri",time:"15:00–16:30",room:"LH201",units:3,slots:25,enrolled:24,fee:1500},
+  {code:"GE001",name:"Filipino 1",day:"Mon",time:"14:30–16:00",room:"AH101",units:3,slots:50,enrolled:32,fee:900},
+  {code:"GE002",name:"English Communication",day:"Wed",time:"09:00–10:30",room:"AH102",units:3,slots:50,enrolled:47,fee:900},
+  {code:"PE001",name:"Physical Education 1",day:"Fri",time:"07:30–09:00",room:"GYM",units:2,slots:60,enrolled:18,fee:600},
+  {code:"NS001",name:"Natural Science",day:"Tue/Thu",time:"10:30–12:00",room:"SCI201",units:3,slots:40,enrolled:33,fee:1100},
+  {code:"HUM01",name:"Humanities",day:"Wed/Fri",time:"13:00–14:30",room:"AH201",units:3,slots:45,enrolled:22,fee:900},
+];
+let adminStats={enrolled:1247,active:312,conflicts:58,revenue:2340000};
+let currentAdmin=null;
+
+function doAdminLogin(){
+  const username=document.getElementById('admin-user-input').value.trim();
+  const pass=document.getElementById('admin-pass-input').value;
+  const errBox=document.getElementById('admin-login-error');
+  if(!username||!pass){errBox.style.display='flex';document.getElementById('admin-err-msg').textContent='Please enter your username and password.';return;}
+  const acct=ADMIN_ACCOUNTS.find(a=>a.username===username&&a.pass===pass);
+  if(acct){
+    currentAdmin={...acct};
+    errBox.style.display='none';
+    document.getElementById('admin-badge-hdr').style.display='inline-flex';
+    document.getElementById('admin-name-hdr').textContent=currentAdmin.name;
+    document.getElementById('btn-logout').style.display='inline-flex';
+    document.getElementById('screen-admin-login').classList.remove('active');
+    document.getElementById('screen-admin-dash').classList.add('active');
+    renderAdmin();
+    window.scrollTo(0,0);
+  } else {
+    errBox.style.display='flex';
+    document.getElementById('admin-err-msg').textContent='Invalid username or password.';
   }
+}
+
+function doAdminLogout(){
+  currentAdmin=null;
+  document.getElementById('admin-badge-hdr').style.display='none';
+  document.getElementById('btn-logout').style.display='none';
+  document.getElementById('admin-user-input').value='';
+  document.getElementById('admin-pass-input').value='';
+  document.getElementById('screen-admin-dash').classList.remove('active');
+  document.getElementById('screen-admin-login').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function renderAdmin(){
+  document.getElementById('adm-enrolled').textContent=adminStats.enrolled.toLocaleString();
+  document.getElementById('adm-active').textContent=adminStats.active.toLocaleString();
+  document.getElementById('adm-conflicts').textContent=adminStats.conflicts.toLocaleString();
+  document.getElementById('adm-revenue').textContent='₱'+(adminStats.revenue/1000000).toFixed(2)+'M';
+  document.getElementById('admin-table').innerHTML=`
+    <table class="sched-table">
+      <thead><tr><th>Code</th><th>Subject</th><th>Enrolled</th><th>Slots</th><th>Status</th><th>Fill</th></tr></thead>
+      <tbody>${SUBJECTS.map(s=>{
+        const pct=Math.round(s.enrolled/s.slots*100);
+        const full=s.enrolled>=s.slots;
+        const cls=full?'badge-red':pct>=80?'badge-gold':'badge-green';
+        const bc=full?'#C0392B':pct>=80?'#D4A800':'#7B1D1D';
+        return `<tr>
+          <td class="code-cell">${s.code}</td>
+          <td style="font-weight:500;">${s.name}</td>
+          <td><strong>${s.enrolled}</strong></td>
+          <td>${s.slots}</td>
+          <td><span class="badge ${cls}">${full?'FULL':pct>=80?'LTD':'OPEN'}</span></td>
+          <td>
+            <div style="display:flex;align-items:center;gap:.4rem;">
+              <div style="flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;min-width:50px;">
+                <div style="width:${pct}%;height:100%;background:${bc};border-radius:3px;"></div>
+              </div>
+              <span style="font-size:.68rem;font-weight:600;color:var(--maroon);min-width:28px;">${pct}%</span>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+}
+
+function simulateEnrollments(){
+  SUBJECTS.forEach(s=>{s.enrolled=Math.min(s.enrolled+Math.floor(Math.random()*8),s.slots);});
+  adminStats.enrolled+=50;
+  adminStats.active=Math.floor(Math.random()*200)+200;
+  adminStats.conflicts+=Math.floor(Math.random()*10)+2;
+  adminStats.revenue+=50*4500;
+  renderAdmin();
+}
+
+function resetAll(){
+  if(!confirm('Reset all enrollment data?')) return;
+  const orig=[28,40,20,15,29,10,24,32,47,18,33,22];
+  SUBJECTS.forEach((s,i)=>{s.enrolled=orig[i];});
+  adminStats={enrolled:1247,active:312,conflicts:58,revenue:2340000};
+  renderAdmin();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('screen-admin-login').classList.contains('active')) doAdminLogin();
+});
+</script>
+</body>
+</html>
